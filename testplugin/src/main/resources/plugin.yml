@@ -1,0 +1,4 @@
+name: testplugin
+version: '1.0-SNAPSHOT'
+main: com.corexaen.Trade.testplugin.Testplugin
+api-version: '1.21'
