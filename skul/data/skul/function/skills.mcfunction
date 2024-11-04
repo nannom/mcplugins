@@ -1,0 +1,1 @@
+execute if data entity @s {Inventory:[{Slot:103b,id:"minecraft:leather_helmet"}]} if data entity @s {SelectedItem:{id:"minecraft:iron_shovel"}} run function skul:little_bone_skill_1

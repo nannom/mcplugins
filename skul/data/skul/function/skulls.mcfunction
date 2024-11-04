@@ -1,0 +1,2 @@
+execute if data entity @s {Inventory:[{Slot:103b,id:"minecraft:leather_helmet"}]} run item replace entity @s hotbar.1 with iron_shovel
+execute if data entity @s {Inventory:[{Slot:103b,id:"minecraft:leather_helmet"}]} run item replace entity @s hotbar.2 with iron_pickaxe
