@@ -8,14 +8,29 @@ execute as @a run scoreboard players set @s damage 150
 execute as @a run scoreboard players set @s maxhealth 150
 
 #아이템별 스텟 변화
-execute as @a run function skul:items
+execute as @a run (
+    scoreboard players set @s attack_speed 0
+    execute store result score bamboo items run clear @s turtle_helmet[custom_model_data=16] 0
+    scoreboard players operation bamboo items *= bamboo_speed multiple
+    scoreboard players operation @s attack_speed += bamboo items
+
+    scoreboard players operation @s attack_speed *= @s attack_cooltime
+    scoreboard players operation @s attack_speed /= percent multiple
+    scoreboard players operation @s attack_cooltime -= @s attack_speed
+)
 
 #공격 관련 엔티티 위치 세팅
 execute as @e[tag=attack] at @a[tag=player] run tp ^ ^ ^1
 execute as @e[tag=click] at @a[tag=player] run tp ~ ~-1 ~
 
 #공격시
-execute as @e[tag=click] on attacker at @e[tag=attack] if score @s attack_cooldown matches ..0 run function skul:attack
+execute as @e[tag=click] on attacker at @e[tag=attack] if score @s attack_cooldown matches ..0 run (
+    particle minecraft:sweep_attack ~ ~1.2 ~ 0 0 0 0 1
+    execute store result score now damage run scoreboard players get @a[tag=player,limit=1] damage
+    tag @e[distance=..1.5,tag=mob] add _damagetarget
+    execute as @e[tag=attack] at @s run playsound minecraft:entity.blaze.shoot player @a ~ ~ ~ 0.5 2 0.5
+    scoreboard players operation @s attack_cooldown = @s attack_cooltime
+)
 execute as @e[tag=click] on attacker run execute as @e[tag=click] run data remove entity @s attack
 execute as @a if score @s attack_cooldown matches 1.. run scoreboard players remove @s attack_cooldown 1
 
@@ -28,7 +43,13 @@ execute as @e[tag=mob] at @s unless block ~ ~ ~ air run tp @s ~ ~0.1 ~
 #execute as @a at @s unless data entity @s {Inventory:[{Slot:-106b,id:"minecraft:leather_horse_armor"}]} if data entity @s {SelectedItem:{id:"minecraft:leather_horse_armor"}} run scoreboard players set @s dash 1
 #execute as @a at @s unless data entity @s {Inventory:[{Slot:-106b,id:"minecraft:leather_horse_armor"}]} if data entity @s {SelectedItem:{id:"minecraft:leather_horse_armor"}} run item replace entity @s weapon.mainhand from entity @s weapon.offhand
 #execute as @a at @s unless data entity @s {Inventory:[{Slot:-106b,id:"minecraft:leather_horse_armor"}]} run item replace entity @s weapon.offhand with minecraft:leather_horse_armor[minecraft:custom_model_data=1,minecraft:hide_tooltip={},minecraft:custom_name="_"]
-execute as @e[tag=click] on target run function skul:use_skill
+execute as @e[tag=click] on target run (
+    execute if data entity @s {SelectedItemSlot:0} run scoreboard players set @s dash 1
+    execute if data entity @s {SelectedItemSlot:1} run function skul:skills
+    execute if data entity @s {SelectedItemSlot:2} run function skul:skills
+    execute if data entity @s {SelectedItemSlot:3} run function skul:obb
+    execute if data entity @s {SelectedItemSlot:8} run function skul:swap
+)
 execute as @e[tag=click] if data entity @s interaction run data remove entity @s interaction
 
 #대쉬
