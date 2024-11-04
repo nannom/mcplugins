@@ -14,4 +14,9 @@ public final class Testplugin extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+    @EventHandler
+    public void PlayerEvent(PlayerEvent e) {
+        
+    }
 }
