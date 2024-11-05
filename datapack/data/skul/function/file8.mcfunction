@@ -1,1 +1,2 @@
-playsound minecraft:item.firecharge.use player @a ~ ~ ~ 0.5 1 0.5
+attribute @s minecraft:generic.gravity base set 0.08
+scoreboard players set @s dash 0

@@ -1,40 +1,5 @@
-item replace entity @s inventory.0 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.1 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.2 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.3 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.4 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.5 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.6 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.7 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.8 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-
-#item replace entity @s inventory.9 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.10 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.11 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.12 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.13 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.14 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.15 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.16 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.17 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-
-#item replace entity @s inventory.18 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.19 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.20 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s inventory.21 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.22 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.23 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.24 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.25 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s inventory.26 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-
-#item replace entity @s hotbar.0 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s hotbar.1 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s hotbar.2 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s hotbar.3 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s hotbar.4 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s hotbar.5 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s hotbar.6 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s hotbar.7 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-#item replace entity @s hotbar.8 with minecraft:leather_horse_armor[minecraft:custom_model_data=1,!minecraft:item_name,minecraft:hide_tooltip={}]
-item replace entity @s player.cursor with air
+tag @s add _targetitem
+execute if data entity @s {Item:{id:"minecraft:leather_horse_armor"}} run execute as @a run function skul:file12
+execute if data entity @s {Item:{id:"minecraft:leather_horse_armor"}} run kill @s
+execute if data entity @s {Item:{id:"minecraft:leather_helmet"}} run function skul:file13
+tag @s remove _targetitem

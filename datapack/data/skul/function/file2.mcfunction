@@ -1,8 +1,11 @@
-scoreboard players set @s attack_speed 0
-execute store result score bamboo items run clear @s turtle_helmet[custom_model_data=16] 0
-scoreboard players operation bamboo items *= bamboo_speed multiple
-scoreboard players operation @s attack_speed += bamboo items
+#변수 초기값 설정
+scoreboard players add @s attack_cooldown 0
+scoreboard players add @s double 0
 
-scoreboard players operation @s attack_speed *= @s attack_cooltime
-scoreboard players operation @s attack_speed /= percent multiple
-scoreboard players operation @s attack_cooltime -= @s attack_speed
+#스탯 초기값 설정
+scoreboard players set @s attack_cooltime 12
+scoreboard players set @s damage 150
+scoreboard players set @s maxhealth 150
+
+#아이템별 스텟 변화
+function skul:file3

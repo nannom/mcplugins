@@ -49,8 +49,7 @@ execute as @a if score @s attack_cooldown matches 1.. run scoreboard players rem
 #execute as @a at @s unless data entity @s {Inventory:[{Slot:-106b,id:"minecraft:leather_horse_armor"}]} run item replace entity @s weapon.offhand with minecraft:leather_horse_armor[minecraft:custom_model_data=1,minecraft:hide_tooltip={},!minecraft:item_name]
 execute as @e[tag=click] on target run (
     execute if data entity @s {SelectedItemSlot:0} run scoreboard players set @s dash 1
-    execute if data entity @s {SelectedItemSlot:1} run function skul:skills
-    execute if data entity @s {SelectedItemSlot:2} run function skul:skills
+    execute if data entity @s {SelectedItem:{id:"minecraft:diamond_pickaxe"}} run function skul:skills
     execute if data entity @s {SelectedItemSlot:3} run function skul:obb
     execute if data entity @s {SelectedItemSlot:8} run function skul:swap
 )
@@ -173,9 +172,11 @@ execute as @e[type=item] at @s run (
         item replace entity @s player.cursor with air
     )
     execute if data entity @s {Item:{id:"minecraft:leather_horse_armor"}} run kill @s
-    execute if data entity @s {Item:{id:"minecraft:leather_helmet"}} run execute as @a unless data entity @s Inventory[{Slot:8b}] if data entity @s Inventory[{Slot:103b}] run item replace entity @s hotbar.8 from entity @e[tag=_targetitem,limit=1] container.0
-    execute if data entity @s {Item:{id:"minecraft:leather_helmet"}} run execute as @a unless data entity @s Inventory[{Slot:103b}] run item replace entity @s armor.head from entity @e[tag=_targetitem,limit=1] container.0
-    execute if data entity @s {Item:{id:"minecraft:leather_helmet"}} run kill @s
+    execute if data entity @s {Item:{id:"minecraft:leather_helmet"}} run (
+        execute as @a unless data entity @s Inventory[{Slot:8b}] if data entity @s Inventory[{Slot:103b}] run item replace entity @s hotbar.8 from entity @e[tag=_targetitem,limit=1] container.0
+        execute as @a unless data entity @s Inventory[{Slot:103b}] run item replace entity @s armor.head from entity @e[tag=_targetitem,limit=1] container.0
+        kill @s
+    )
     tag @s remove _targetitem
 )
 

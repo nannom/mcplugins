@@ -1,5 +1,3 @@
-execute if data entity @s {SelectedItemSlot:0} run scoreboard players set @s dash 1
-execute if data entity @s {SelectedItemSlot:1} run function skul:skills
-execute if data entity @s {SelectedItemSlot:2} run function skul:skills
-execute if data entity @s {SelectedItemSlot:3} run function skul:obb
-execute if data entity @s {SelectedItemSlot:8} run function skul:swap
+execute as @e[tag=mob] at @s if score @s hp matches ..0 run kill @s
+execute as @e[tag=mob] at @s if block ~ ~-0.01 ~ air run tp ~ ~-0.1 ~
+execute as @e[tag=mob] at @s unless block ~ ~ ~ air run tp @s ~ ~0.1 ~
