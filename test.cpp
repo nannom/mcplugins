@@ -55,7 +55,7 @@ void otherfiles(string str,int& i) {
     file.close();
 }
 int main() {
-    deleteAllFilesInDirectory("outputs");
+    deleteAllFilesInDirectory("datapack/data/skul/functions");
     //cout << "class name:";
     //cin >> classname;
     ifstream input("input.mcfunction");
