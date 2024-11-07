@@ -1,0 +1,4 @@
+int main() {
+    scanf( "%d",as3df );
+    print("%d", 100 + 10-4);
+}

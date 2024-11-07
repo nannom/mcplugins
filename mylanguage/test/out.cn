@@ -1,0 +1,30 @@
+n int
+f main
+o (
+o )
+o {
+o 
+
+f scanf
+o (
+t %d
+o ,
+v as3df
+o )
+o ;
+o 
+
+f print
+o (
+t %d
+o ,
+n 100
+o +
+n 10
+o -
+n 4
+o )
+o ;
+o 
+
+o }
