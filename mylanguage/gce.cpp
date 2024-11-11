@@ -82,6 +82,9 @@ int main() {
         else if(data.first == "ret") {
             output << (char)0x56;
         }
+        else if(data.first == "getm") {
+            output << (char)0x32;
+        }
         if(data.first == "DATA") {
             output << (char)0xFF;
             for (size_t i = 0; i < data.second[0].length(); i += 2) {
