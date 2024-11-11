@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstring>
 #include <stdlib.h>
+#include <stack>
 using namespace std;
 int main() {
     ifstream input("main.cne",ios::binary | std::ios::ate);
@@ -22,7 +23,8 @@ int main() {
     data = now + 1;
     now = 0;
     char result = 0;
-    while(now < fileSize && memory[now] != 0xFF) {
+    stack<int> calls;
+    while(now < fileSize && memory[now] != 0xEE) {
         switch (memory[now])
         {
         case 0x01:
@@ -52,6 +54,25 @@ int main() {
             result = 0;
             break;
         }
+        case 0x55:
+        {
+            int n1;
+            now++;
+            memcpy(&n1,memory + now,4);
+            now += 4;
+            calls.push(now);
+            now = n1;
+            result = 0;
+            break;
+        }
+        case 0x56:
+        {
+            now++;
+            now = calls.top();
+            calls.pop();
+            result = 0;
+            break;
+        }
         case 0x02:
         {
             int n1;
@@ -72,7 +93,11 @@ int main() {
             result = n5 >> 8;
             break;
         }
-        
+        case 0xEE:
+        {
+            now--;
+            break;
+        }
         case 0x03:
         {
             int n1;

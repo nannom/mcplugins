@@ -1,4 +1,7 @@
-ad2 0,1,3
-print 3
+call _main
+end
+_main:
+ad2 0,1,5
+print 4
 ret
-DATA 41300000
+DATA 306141000000

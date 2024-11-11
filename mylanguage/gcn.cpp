@@ -13,19 +13,6 @@ using namespace std;
 map<int,unsigned char> memory;
 int last_memory = 0;
 vector<pair<string,int>> codes;
-bool isAllDigits(const std::string& str) {
-    // 문자열의 모든 문자가 숫자인지 확인
-    return std::all_of(str.begin(), str.end(), [](char c) {
-        return std::isdigit(c);  // 문자가 숫자인지 확인
-    });
-}
-bool checkFirstAndLastChar(const std::string& str,char a) {
-    // 문자열의 길이가 2 이상이어야 첫 글자와 마지막 글자를 비교할 수 있음
-    if (str.size() >= 2) {
-        return str.front() == a && str.back() == a;
-    }
-    return false;
-}
 std::string unsignedCharToHex(unsigned char value) {
     std::stringstream ss;
     ss << std::setw(2) << std::setfill('0') << std::hex << (int)value;
@@ -46,11 +33,45 @@ type
 5 addr
 6
 */
+int pares(ofstream& output,int& i,string todo,int plus_buffer) {
+    int result = last_memory;
+    memory[last_memory] = 0;
+    last_memory++;
+    while(codes[i].first != ")") {
+        if(codes[i].second == 4) {
+            if(codes[i].first == "print") {
+                i+=2;
+                output << pares(output,i,"print ");
+
+            }
+        }
+        else if(codes[i].second == 2) {
+            if(codes[i].first == "(") {
+                pares(output,i,"");
+            }
+            else if(codes[i].first == "+") {
+                if(codes[i-1].second == 1) {
+                    output << "ad2 " << atoi(codes[i-1].first.c_str()) + 3 << "," << atoi(codes[i+1].first.c_str()) + 3 << "," << args.top() + 3 << endl;
+                    output << "nif " << plus_buffer << endl;
+                    memory[args.top()] = 0;
+                    memory[args.top() + 1] = 0;
+                    memory[args.top() + 2] = 0;
+                    memory[args.top() + 3] = 0;
+                }
+                else if(codes[i-1].second == 3) {
+                    output << "ad2 " << atoi(codes[i-1].first.c_str()) << "," << atoi(codes[i+1].first.c_str()) << "," << args.top() << endl;
+                }
+            }
+        }
+    }
+    output << todo;
+    return result;
+}
 int main() {
     ifstream input("main.ccn");
     ofstream output("out.cn");
     string file((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
-    cout << file << endl;
+    output << "call _main" << endl <<  "end" << endl;
     string ntext = " /+-*/!@#$%^&(){}[]\\\n`~,.|;\t";
     set<string> vars = {"int","char"};
     for(int i = 0;i<file.length();i++) {
@@ -127,11 +148,10 @@ int main() {
     last_memory++;
     int lines = 0;
     stack<string> stacks;
-    stack<int> args;
-    string have_to_do = "";
     for(int i = 0;i<codes.size();i++) {
         if(codes[i].second == 6) {
             if(codes[i+1].second == 4) {
+                output << "_" << codes[i+1].first << ":" << endl;
                 stacks.push(string("ret"));
                 while(codes[i].first != ")") {
                     i++;
@@ -141,8 +161,9 @@ int main() {
         }
         else if(codes[i].second == 4) {
             if(codes[i].first == "print") {
-                have_to_do += "print ";
-                have_to_do += to_string(last_memory);
+                i+=2;
+                output << pares(output,i,"print ",plus_buffer);
+
             }
         }
         else if(codes[i].second == 2) {
@@ -154,20 +175,12 @@ int main() {
                 stacks.push("");
             }
             else if(codes[i].first == "(") {
-                args.push(last_memory);
-                memory[last_memory] = 0;
-                last_memory++;
-            }
-            else if(codes[i].first == ")") {
-                args.pop();
+                pares(output,i,"",plus_buffer);
             }
             else if(codes[i].first == ";") {
-                output << have_to_do << endl;
-                lines++;
-                have_to_do = "";
             }
             else if(codes[i].first == "+") {
-                if(codes[i-1].second == 0) {
+                if(codes[i-1].second == 1) {
                     output << "ad2 " << atoi(codes[i-1].first.c_str()) + 3 << "," << atoi(codes[i+1].first.c_str()) + 3 << "," << args.top() + 3 << endl;
                     output << "nif " << plus_buffer << endl;
                     memory[args.top()] = 0;
@@ -175,20 +188,11 @@ int main() {
                     memory[args.top() + 2] = 0;
                     memory[args.top() + 3] = 0;
                 }
-                else if(codes[i-1].second == 1) {
+                else if(codes[i-1].second == 3) {
                     output << "ad2 " << atoi(codes[i-1].first.c_str()) << "," << atoi(codes[i+1].first.c_str()) << "," << args.top() << endl;
                 }
                 lines++;
             }
-        }
-        else if(codes[i].second == 1) {
-            memory[args.top()] = memory[atoi(codes[i].first.c_str())];
-            memory[args.top() + 1] = memory[atoi(codes[i].first.c_str()) + 1];
-            memory[args.top() + 2] = memory[atoi(codes[i].first.c_str()) + 2];
-            memory[args.top() + 3] = memory[atoi(codes[i].first.c_str()) + 3];
-        }
-        else if(codes[i].second == 0) {
-            memory[args.top()] = memory[atoi(codes[i].first.c_str())];
         }
     }
     output << "DATA ";

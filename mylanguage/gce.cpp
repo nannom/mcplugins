@@ -50,6 +50,8 @@ std::vector<std::pair<std::string, std::vector<std::string>>> parseString(const 
 int main() {
     ifstream input("out.cn");
     ofstream output("main.cne",std::ios::binary);
+    map<string,int> functions;
+    map<int,string> calls;
     string file((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
     auto datas = parseString(file);
     for(auto data : datas) {
@@ -74,6 +76,12 @@ int main() {
         else if(data.first == "print") {
             output << (char)0x06;
         }
+        else if(data.first == "end") {
+            output << (char)0xEE;
+        }
+        else if(data.first == "ret") {
+            output << (char)0x56;
+        }
         if(data.first == "DATA") {
             output << (char)0xFF;
             for (size_t i = 0; i < data.second[0].length(); i += 2) {
@@ -83,6 +91,18 @@ int main() {
                 output.write(reinterpret_cast<const char*>(&byte), sizeof(byte));  // 바이트를 파일에 기록
             }
         }
+        else if(data.first.back() == ':') {
+            data.first.pop_back();
+            functions[data.first] = output.tellp();
+        }
+        else if(data.first == "call") {
+            output << (char)0x55;
+            calls[output.tellp()] = data.second[0];
+            output << (char)0x00;
+            output << (char)0x00;
+            output << (char)0x00;
+            output << (char)0x00;
+        }
         else {
             for(auto arg : data.second) {
                 int number = hexStringToInt(arg);
@@ -90,4 +110,17 @@ int main() {
             }
         }
     }
+    for(auto call : calls) {
+        if(functions.find(call.second) != functions.end()) {
+            output.seekp(call.first);
+            auto function = functions.find(call.second);
+            output.write(reinterpret_cast<const char*>(&function->second),sizeof(function->second));
+        }
+        cout << call.first << " " << call.second << endl;
+    }
+    for(auto function : functions) {
+        cout << function.first << " " << function.second << endl;
+    }
+    input.close();
+    output.close();
 }
