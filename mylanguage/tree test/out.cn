@@ -1,21 +1,18 @@
 call _main
 end
 _print:
-getm 3,7
-print 7
+getm 1,5
+print 5
 ret
 _main:
-mov 1,a
-not a
-add a
-ad2 0,a,9
-ad2 9,2,b
-mov b,8
-mov 8,c
-mov d,3
-mov e,4
-mov f,5
-mov 10,6
+mov 0,6
+ad2 6,6,7
+mov 7,6
+mov 6,8
+mov 9,1
+mov a,2
+mov b,3
+mov c,4
 call _print
 ret
-DATA 413031000000000000000000000c000000
+DATA 32000000000000000008000000
