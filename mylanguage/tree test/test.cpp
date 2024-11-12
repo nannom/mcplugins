@@ -23,9 +23,11 @@ std::string toHexString(int value) {
 }
 map<int,unsigned char> memory;
 int last_memory = 0;
-string ntext = " /+-*!@#$%^&(){}[]\\\n`~,.|;\t\r";
+string ntext = " /+-*=!@#$%^&(){}[]\\\n`~,.|;\t\r";
 string math = "+-*/";
 set<string> Vars = {"int","char","void"};
+class Code;
+map<string,Code> vars;
 map<string,int> functions;
 class Code {
 public:
@@ -51,24 +53,72 @@ public:
         }
     }
     void outcode(ofstream& output) {
+        if(code.type == 0) {
+            if(vars.find(code.name) != vars.end()) {
+                code = vars.find(code.name)->second;
+            }
+        }
         if(code.type == 6) {
-            if(childs[0]->childs.size() == 2) {
-                if(childs[0]->childs[0]->code.name == "(") {
-                    if(childs[0]->childs[1]->code.name == "{") {
-                        output << "_" << childs[0]->code.name << ":" << endl;
-                        childs[0]->childs[1]->outcode(output);
-                        output << "ret" << endl;
+            if(childs.size() == 1) {
+                if(childs[0]->childs.size() == 2) {
+                    if(childs[0]->childs[0]->code.name == "(") {
+                        if(childs[0]->childs[1]->code.name == "{") {
+                            output << "_" << childs[0]->code.name << ":" << endl;
+                            childs[0]->childs[1]->outcode(output);
+                            output << "ret" << endl;
+                        }
+                        else {
+                            //함수 선언
+                        }
                     }
                     else {
-                        //함수 선언
+                        //아마 오류
                     }
                 }
                 else {
-                    //변수 정의
+                    for(auto child : childs) {
+                        if(code.name == "int") {
+                            memory[last_memory] = 0;
+                            memory[last_memory + 1] = 0;
+                            memory[last_memory + 2] = 0;
+                            memory[last_memory + 3] = 0;
+                            child->code.addr = last_memory;
+                            child->code.type = 1;
+                            vars[child->code.name] = child->code;
+                            last_memory += 4;
+                        }
+                        if(code.name == "char") {
+                            memory[last_memory] = 0;
+                            child->code.addr = last_memory;
+                            child->code.type = 3;
+                            vars[child->code.name] = child->code;
+                            last_memory++;
+                        }//변수 종류
+                        child->outcode(output);
+                    }
                 }
             }
             else {
-                //변수 선언
+                for(auto child : childs) {
+                    if(code.name == "int") {
+                        memory[last_memory] = 0;
+                        memory[last_memory + 1] = 0;
+                        memory[last_memory + 2] = 0;
+                        memory[last_memory + 3] = 0;
+                        child->code.addr = last_memory;
+                        child->code.type = 1;
+                        vars[child->code.name] = child->code;
+                        last_memory += 4;
+                    }
+                    if(code.name == "char") {
+                        memory[last_memory] = 0;
+                        child->code.addr = last_memory;
+                        child->code.type = 3;
+                        vars[child->code.name] = child->code;
+                        last_memory++;
+                    }//변수 종류
+                    child->outcode(output);
+                }
             }
         }
         else {
@@ -81,10 +131,10 @@ public:
                         memory[last_memory + 2] = 0;
                         memory[last_memory + 3] = 0;
                         code.addr = last_memory;
-                        output << "mov " << childs[0]->code.addr << "," << last_memory << endl;
-                        output << "mov " << childs[0]->code.addr + 1 << "," << last_memory + 1 << endl;
-                        output << "mov " << childs[0]->code.addr + 2 << "," << last_memory + 2 << endl;
-                        output << "mov " << childs[0]->code.addr + 3 << "," << last_memory + 3 << endl;
+                        output << "mov " << toHexString(childs[0]->code.addr) << "," << toHexString(last_memory) << endl;
+                        output << "mov " << toHexString(childs[0]->code.addr + 1) << "," << toHexString(last_memory + 1) << endl;
+                        output << "mov " << toHexString(childs[0]->code.addr + 2) << "," << toHexString(last_memory + 2) << endl;
+                        output << "mov " << toHexString(childs[0]->code.addr + 3) << "," << toHexString(last_memory + 3) << endl;
                         last_memory+=4;
                         code.type = 1;
 
@@ -92,7 +142,7 @@ public:
                     else if(childs[0]->code.type == 3) {
                         memory[last_memory] = 0;
                         code.addr = last_memory;
-                        output << "mov " << childs[0]->code.addr << "," << last_memory << endl;
+                        output << "mov " << toHexString(childs[0]->code.addr) << "," << toHexString(last_memory) << endl;
                         last_memory++;
                         code.type = 3;
                     }
@@ -105,7 +155,7 @@ public:
                     if(childs[0]->code.type == 3) {
                         memory[last_memory] = 0;
                         code.addr = last_memory;
-                        output << "ad2 " << childs[0]->code.addr << "," << childs[1]->code.addr << "," << last_memory << endl;
+                        output << "ad2 " << toHexString(childs[0]->code.addr) << "," << toHexString(childs[1]->code.addr) << "," << toHexString(last_memory) << endl;
                         last_memory++;
                         code.type = 3;
                     }
@@ -118,11 +168,12 @@ public:
                     if(childs[0]->code.type == 3) {
                         memory[last_memory] = 0;
                         code.addr = last_memory;
+                        memory[last_memory + 1] = 0;
                         int notn = last_memory + 1;
-                        output << "mov " << childs[1]->code.addr << "," << notn << endl;
-                        output << "not " << notn << endl;
-                        output << "add " << notn << endl;
-                        output << "ad2 " << childs[0]->code.addr << "," << notn << "," << last_memory << endl;
+                        output << "mov " << toHexString(childs[1]->code.addr) << "," << toHexString(notn) << endl;
+                        output << "not " << toHexString(notn) << endl;
+                        output << "add " << toHexString(notn) << endl;
+                        output << "ad2 " << toHexString(childs[0]->code.addr) << "," << toHexString(notn) << "," << toHexString(last_memory) << endl;
                         last_memory+=2;
                         code.type = 3;
                     }
@@ -139,14 +190,27 @@ public:
                         memory[last_memory + 2] = addr[2];
                         memory[last_memory + 3] = addr[3];
                         int function = functions.find(code.name)->second;
-                        output << "mov " << last_memory << "," << function << endl;
-                        output << "mov " << last_memory + 1 << "," << function + 1 << endl;
-                        output << "mov " << last_memory + 2 << "," << function + 2 << endl;
-                        output << "mov " << last_memory + 3 << "," << function + 3 << endl;
+                        output << "mov " << toHexString(last_memory) << "," << toHexString(function) << endl;
+                        output << "mov " << toHexString(last_memory + 1) << "," << toHexString(function + 1) << endl;
+                        output << "mov " << toHexString(last_memory + 2) << "," << toHexString(function + 2) << endl;
+                        output << "mov " << toHexString(last_memory + 3) << "," << toHexString(function + 3) << endl;
                         last_memory += 4;
                         output << "call _" << code.name << endl;
                     }
                 }
+            }
+            else if(code.name == "=") {
+                childs[0]->outcode(output);
+                if(parent->code.type == 1) {
+                    output << "mov " << toHexString(childs[0]->code.addr) << "," << toHexString(parent->code.addr) << endl;
+                    output << "mov " << toHexString(childs[0]->code.addr + 1) << "," << toHexString(parent->code.addr + 1) << endl;
+                    output << "mov " << toHexString(childs[0]->code.addr + 2) << "," << toHexString(parent->code.addr + 2) << endl;
+                    output << "mov " << toHexString(childs[0]->code.addr + 3) << "," << toHexString(parent->code.addr + 3) << endl;
+                }
+                else if(parent->code.type == 3) {
+                    output << "mov " << toHexString(childs[0]->code.addr) << "," << toHexString(parent->code.addr) << endl;
+                }
+                cout << parent->code.type << endl;
             }
             else {
                 for(auto child : childs) {
@@ -283,6 +347,12 @@ int main() {
                 tree = tree->parent;
             }
         }
+        else if(code.name == ",") {
+            if(tree->code.name == "=") {
+                tree = tree->parent;
+                tree = tree->parent;
+            }
+        }
         else if(math.find(code.name) != string::npos) {
             if(i != 0) {
                 if(i != codes.size() - 1) {
@@ -302,6 +372,12 @@ int main() {
                 }
             }
         }
+        else if(code.name == "=") {
+            child->code = code;
+            child->parent = tree->childs.back();
+            tree->childs.back()->childs.push_back(child);
+            tree = child;
+        }
         else {
             child->code = code;
             child->parent = tree;
@@ -312,11 +388,25 @@ int main() {
                 }
             }
             else if(code.name == ";") {
-                if(tree->code.type == 0) {
+                tree->childs.pop_back();
+                if(tree->code.type == 2) {
+                    if(tree->code.name == "=") {
+                        tree = tree->parent;
+                        tree = tree->parent;
+                        child->parent = tree;
+                        if(tree->code.type == 6) {
+                            tree = tree->parent;
+                        }
+                    }
+                }
+                else if(tree->code.type == 0) {
                     tree = tree->parent;
                     if(Vars.find(tree->code.name) != Vars.end()) {
                         tree = tree->parent;
                     }
+                }
+                else if(tree->code.type == 6) {
+                    tree = tree->parent;
                 }
             }
         }
@@ -328,7 +418,7 @@ int main() {
     memory[last_memory + 2] = 0;
     memory[last_memory + 3] = 0;
     memory[last_memory + 4] = 0;
-    output << "_print:" << endl << "getm " << last_memory << "," << last_memory + 4 << endl << "print " << last_memory + 4 << endl << "ret" << endl;
+    output << "_print:" << endl << "getm " << toHexString(last_memory) << "," << toHexString(last_memory + 4) << endl << "print " << toHexString(last_memory + 4) << endl << "ret" << endl;
     functions.insert({"print",last_memory});
     last_memory+=5;
     top->outcode(output);

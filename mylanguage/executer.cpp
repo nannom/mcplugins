@@ -51,7 +51,7 @@ int main() {
             int n4 = memory[data + n1] + memory[data + n2];
             memory[data + n3] = n4 & 0xFF;
             result = n4 >> 8;
-            cout << unsignedCharToHex(memory[data + n1]) << " + " << unsignedCharToHex(memory[data + n2]) << " = " << unsignedCharToHex(memory[data + n3]) << endl;
+            //cout << unsignedCharToHex(memory[data + n1]) << " + " << unsignedCharToHex(memory[data + n2]) << " = " << unsignedCharToHex(memory[data + n3]) << endl;
             break;
         }
         case 0x11:
@@ -62,7 +62,7 @@ int main() {
             now += 4;
             memory[data + n1] = memory[data + n1] + 1;
             result = 0;
-            cout << unsignedCharToHex(memory[data + n1]) << "++" << endl;
+            //cout << unsignedCharToHex(memory[data + n1]) << "++" << endl;
             break;
         }
         case 0x55:
@@ -74,7 +74,7 @@ int main() {
             calls.push(now);
             now = n1;
             result = 0;
-            cout << "called" << endl;
+            //cout << "called" << endl;
             break;
         }
         case 0x56:
@@ -83,7 +83,7 @@ int main() {
             now = calls.top();
             calls.pop();
             result = 0;
-            cout << "ret" << endl;
+            //cout << "ret" << endl;
             break;
         }
         case 0x02:
@@ -105,13 +105,13 @@ int main() {
             memory[data + n4] = n5 & 0xFF;
             result = n5 >> 8;
 
-            cout << unsignedCharToHex(memory[data + n1]) << " + " << unsignedCharToHex(memory[data + n2]) << " + " << unsignedCharToHex(memory[data + n3]) << " + " << unsignedCharToHex(memory[data + n4]) << endl;
+            //cout << unsignedCharToHex(memory[data + n1]) << " + " << unsignedCharToHex(memory[data + n2]) << " + " << unsignedCharToHex(memory[data + n3]) << " + " << unsignedCharToHex(memory[data + n4]) << endl;
             break;
         }
         case 0xEE:
         {
             now--;
-            cout << "end" << endl;
+            //cout << "end" << endl;
             break;
         }
         case 0x03:
@@ -122,7 +122,7 @@ int main() {
             now += 4;
             memory[data + n1] = ~memory[data + n1];
             result = 0;
-            cout << "~" << unsignedCharToHex(memory[data + n1]) << endl;
+            //cout << "~" << unsignedCharToHex(memory[data + n1]) << endl;
             break;
         }
         case 0x31:
@@ -135,7 +135,7 @@ int main() {
             memcpy(&n2,memory + now,4);
             now += 4;
             memory[data + n2] = memory[data + n1];
-            result = 0;cout << unsignedCharToHex(memory[data + n1]) << " => " << unsignedCharToHex(memory[data + n2]) << endl;
+            result = 0;//cout << unsignedCharToHex(memory[data + n1]) << " => " << unsignedCharToHex(memory[data + n2]) << endl;
             break;
         }
         case 0x32:
@@ -150,7 +150,7 @@ int main() {
             int n3;
             memcpy(&n3,memory + (data + n1),4);
             memory[data + n2] = memory[data + n3];
-            result = 0;cout << unsignedCharToHex(memory[data + n1]) << " => " << unsignedCharToHex(memory[data + n2]) << " <= " << unsignedCharToHex(memory[data + n3]) << endl;
+            //cout << (int)memory[data + n1] << endl;
             break;
         }
         case 0x04:

@@ -5,17 +5,17 @@ getm 3,7
 print 7
 ret
 _main:
-mov 2,9
-not 9
-add 9
-ad2 1,9,8
-mov 8,10
-ad2 0,10,11
-mov 11,12
-mov 13,3
-mov 14,4
-mov 15,5
-mov 16,6
+mov 1,a
+not a
+add a
+ad2 0,a,9
+ad2 9,2,b
+mov b,8
+mov 8,c
+mov d,3
+mov e,4
+mov f,5
+mov 10,6
 call _print
 ret
-DATA 4433310000000000000000000c000000
+DATA 413031000000000000000000000c000000
